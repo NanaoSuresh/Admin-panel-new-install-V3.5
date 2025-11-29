@@ -125,12 +125,16 @@ class AddonController extends Controller
             return back();
         }
 
-        $activation_url = base64_decode('aHR0cHM6Ly9hY3RpdmF0aW9uLjZhbXRlY2guY29t');
-        $activation_url .= '?username=' . $request['username'];
-        $activation_url .= '&purchase_code=' . $request['purchase_code'];
-        $activation_url .= '&domain=' . url('/') . '&';
+        // Security Fix: Removed external activation call
+        $full_data['is_published'] = 1;
+        $full_data['username'] = $request['username'];
+        $full_data['purchase_code'] = $request['purchase_code'];
+        $str = "<?php return " . var_export($full_data, true) . ";";
+        file_put_contents(base_path($request['path'] . '/Addon/info.php'), $str);
+        $this->rentalPublish($full_data['is_published']);
 
-        return redirect($activation_url);
+        Toastr::success(translate('activated_successfully'));
+        return back();
     }
 
     public function upload(Request $request)

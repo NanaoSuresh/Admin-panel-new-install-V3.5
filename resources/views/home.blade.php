@@ -1,6 +1,6 @@
 @extends('layouts.landing.app')
 @php($business_name =    \App\CentralLogics\Helpers::get_business_settings('business_name'))
-@section('title', translate('messages.landing_page') . ' | ' . $business_name != 'null' ? $business_name : 'Sixam Mart')
+@section('title', translate('messages.landing_page') . ' | ' . ($business_name && $business_name != 'null' ? $business_name : 'umbrella'))
 @section('content')
 
     <!-- Basic Settings -->

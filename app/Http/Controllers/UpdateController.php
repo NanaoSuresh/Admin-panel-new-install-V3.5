@@ -67,7 +67,7 @@ class UpdateController extends Controller
             "app_url_ios_status" => "0",
             "app_url_ios" => "https://www.apple.com/app-store",
             "web_app_url_status" => "0",
-            "web_app_url" => "https://6ammart-web.6amtech.com/"
+            "web_app_url" => "https://umbrella-web.6amtech.com/"
         ]));
 
         //version 1.5.0

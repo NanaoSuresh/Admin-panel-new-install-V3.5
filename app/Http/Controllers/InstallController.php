@@ -52,7 +52,15 @@ class InstallController extends Controller
     public function step2(Request $request)
     {
         if (Hash::check('step_2', $request['token'])) {
-            return view('installation.step2');
+            // Auto-skip Step 2: Set dummy data and redirect to Step 3
+            Helpers::setEnvironmentValue('SOFTWARE_ID', 'MzY3NzIxMTI=');
+            Helpers::setEnvironmentValue('BUYER_USERNAME', 'nulled');
+            Helpers::setEnvironmentValue('PURCHASE_CODE', 'nulled');
+
+            Session::put(base64_decode('cHVyY2hhc2Vfa2V5'), 'nulled');
+            Session::put(base64_decode('dXNlcm5hbWU='), 'nulled');
+
+            return redirect('step3?token='.bcrypt('step_3'));
         }
         session()->flash('error', 'Access denied!');
         return redirect()->route('step0');
@@ -91,18 +99,9 @@ class InstallController extends Controller
         Helpers::setEnvironmentValue('BUYER_USERNAME', $request['username']);
         Helpers::setEnvironmentValue('PURCHASE_CODE', $request['purchase_key']);
 
-        $post = [
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'username' => $request['username'],
-            'purchase_key' => $request['purchase_key'],
-            'domain' => preg_replace("#^[^:/.]*[:/]+#i", "", url('/')),
-        ];
-        // $response = $this->dmvf($post);
-
-        // return redirect($response.'?token='.bcrypt('step_3'));
-        Session::put(base64_decode('cHVyY2hhc2Vfa2V5'), $request[base64_decode('cHVyY2hhc2Vfa2V5')]);//pk
-        Session::put(base64_decode('dXNlcm5hbWU='), $request[base64_decode('dXNlcm5hbWU=')]);//un
+        // Bypass external verification for local/nulled setup
+        Session::put(base64_decode('cHVyY2hhc2Vfa2V5'), $request['purchase_key']);
+        Session::put(base64_decode('dXNlcm5hbWU='), $request['username']);
         return redirect('step3?token='.bcrypt('step_3'));
     }
 
@@ -164,7 +163,7 @@ class InstallController extends Controller
         if (self::check_database_connection($request->DB_HOST, $request->DB_DATABASE, $request->DB_USERNAME, $request->DB_PASSWORD)) {
 
             $key = base64_encode(random_bytes(32));
-            $output = 'APP_NAME=6ammart'.time().
+            $output = 'APP_NAME=umbrella'.time().
                     'APP_ENV=live
                     APP_KEY=base64:' . $key . '
                     APP_DEBUG=false

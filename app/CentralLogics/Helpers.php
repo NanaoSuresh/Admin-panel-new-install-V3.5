@@ -1321,7 +1321,7 @@ class Helpers
                 ],
                 "android" => [
                     "notification" => [
-                        "channelId" => '6ammart',
+                        "channelId" => 'umbrella',
                     ]
                 ],
                 "apns" => [
@@ -1386,7 +1386,7 @@ class Helpers
                     ],
                     "android" => [
                         "notification" => [
-                            "channelId" => '6ammart',
+                            "channelId" => 'umbrella',
                         ]
                     ],
                     "apns" => [
@@ -1418,7 +1418,7 @@ class Helpers
                     ],
                     "android" => [
                         "notification" => [
-                            "channelId" => '6ammart',
+                            "channelId" => 'umbrella',
                         ]
                     ],
                     "apns" => [
