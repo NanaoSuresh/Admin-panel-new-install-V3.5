@@ -22,43 +22,27 @@ use Illuminate\Contracts\Foundation\Application;
 class AddonController extends Controller
 {
     public function __construct(){
-        if (is_dir('Modules\Gateways\Traits') && trait_exists('Modules\Gateways\Traits\SmsGateway')) {
-            $this->extendWithSmsGatewayTrait();
-        }
-    }
-
-    private function extendWithSmsGatewayTrait()
-    {
-        $extendedControllerClass = $this->generateExtendedControllerClass();
-        eval($extendedControllerClass);
-    }
-
-    private function generateExtendedControllerClass()
-    {
-        $baseControllerClass = get_class($this);
-        $traitClassName = 'Modules\Gateways\Traits\SmsGateway';
-
-        $extendedControllerClass = "
-            class ExtendedController extends $baseControllerClass {
-                use $traitClassName;
-            }
-        ";
-
-        return $extendedControllerClass;
+        // Security Fix: Removed dangerous eval() usage
+        // The SmsGateway trait should be properly included via use statement if needed
+        // Dynamic trait loading with eval() is a critical security vulnerability
     }
 
     public function index(): Factory|View|Application
     {
-        $dir = 'Modules';
-        $directories = self::getDirectories($dir);
-        $addons = [];
-        foreach ($directories as $directory) {
-            if($directory !== 'TaxModule'){
-                $sub_dirs = self::getDirectories('Modules/' . $directory);
-                if (in_array('Addon', $sub_dirs)) {
-                    $addons[] = 'Modules/' . $directory;
+        $dir = base_path('Modules');
+        if (is_dir($dir)) {
+            $directories = self::getDirectories($dir);
+            $addons = [];
+            foreach ($directories as $directory) {
+                if ($directory !== 'TaxModule') {
+                    $sub_dirs = self::getDirectories(base_path('Modules/' . $directory));
+                    if (in_array('Addon', $sub_dirs)) {
+                        $addons[] = 'Modules/' . $directory;
+                    }
                 }
             }
+        } else {
+            $addons = [];
         }
         return view('admin-views.system.addon.index', compact('addons'));
     }
@@ -69,7 +53,7 @@ class AddonController extends Controller
             Toastr::info(translate('messages.update_option_is_disable_for_demo'));
             return back();
         }
-        $full_data = include($request['path'] . '/Addon/info.php');
+        $full_data = include(base_path($request['path'] . '/Addon/info.php'));
         $path = $request['path'];
         $addon_name = $full_data['name'];
         if ($full_data['purchase_code'] == null || $full_data['username'] == null) {
@@ -100,7 +84,7 @@ class AddonController extends Controller
         }
         $remove = ["http://", "https://", "www."];
         $url = str_replace($remove, "", url('/'));
-        $full_data = include($request['path'] . '/Addon/info.php');
+        $full_data = include(base_path($request['path'] . '/Addon/info.php'));
 
         $post = [
             base64_decode('dXNlcm5hbWU=') => $request['username'],

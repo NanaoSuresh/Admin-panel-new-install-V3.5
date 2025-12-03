@@ -53,6 +53,13 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
 
+            // Load installation routes only if app is not installed
+            if (env('PURCHASE_CODE') == null) {
+                Route::middleware('web')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/install.php'));
+            }
+
             Route::prefix('admin')
                 ->middleware('web')
                 ->namespace($this->namespace)
