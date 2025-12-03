@@ -29,8 +29,35 @@ use Illuminate\Support\Facades\Http;
 */
 
 
+
+
 Route::post('/subscribeToTopic', [FirebaseController::class, 'subscribeToTopic']);
-Route::get('/', 'HomeController@index')->name('home');
+
+// Redirect to installation if not installed
+Route::get('/', function() {
+    // Check if installation is complete by verifying database tables exist
+    try {
+        if (env('PURCHASE_CODE') == null) {
+            return redirect('/step0');
+        }
+        
+        // Verify database connection and critical tables exist
+        \DB::connection()->getPdo();
+        $tablesExist = \Schema::hasTable('business_settings') && 
+                       \Schema::hasTable('admins') && 
+                       \Schema::hasTable('data_settings');
+        
+        if (!$tablesExist) {
+            return redirect('/step0');
+        }
+        
+        return app()->make('App\Http\Controllers\HomeController')->index();
+    } catch (\Exception $e) {
+        // Database connection failed or tables don't exist - redirect to installation
+        return redirect('/step0');
+    }
+})->name('home');
+
 Route::get('lang/{locale}', 'HomeController@lang')->name('lang');
 Route::get('terms-and-conditions', 'HomeController@terms_and_conditions')->name('terms-and-conditions');
 Route::get('about-us', 'HomeController@about_us')->name('about-us');

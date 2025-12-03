@@ -53,8 +53,20 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
 
-            // Load installation routes only if app is not installed
-            if (env('PURCHASE_CODE') == null) {
+            // Load installation routes only if app is not fully installed
+            // Check both PURCHASE_CODE and database tables existence
+            $isInstalled = false;
+            try {
+                if (env('PURCHASE_CODE') != null) {
+                    \DB::connection()->getPdo();
+                    $isInstalled = \Schema::hasTable('business_settings') && 
+                                   \Schema::hasTable('admins');
+                }
+            } catch (\Exception $e) {
+                $isInstalled = false;
+            }
+            
+            if (!$isInstalled) {
                 Route::middleware('web')
                     ->namespace($this->namespace)
                     ->group(base_path('routes/install.php'));
