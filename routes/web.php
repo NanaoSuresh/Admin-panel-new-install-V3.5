@@ -35,13 +35,14 @@ Route::post('/subscribeToTopic', [FirebaseController::class, 'subscribeToTopic']
 
 // Redirect to installation if not installed
 Route::get('/', function() {
-    // Check if installation is complete by verifying database tables exist
+    // Check if installation is complete by verifying APP_INSTALL flag and database tables
     try {
-        if (env('PURCHASE_CODE') == null) {
+        // APP_INSTALL is set to true only after database is configured in step3
+        if (env('APP_INSTALL') != 'true') {
             return redirect('/step0');
         }
         
-        // Verify database connection and critical tables exist
+        // Double-check: Verify database connection and critical tables exist
         \DB::connection()->getPdo();
         $tablesExist = \Schema::hasTable('business_settings') && 
                        \Schema::hasTable('admins') && 

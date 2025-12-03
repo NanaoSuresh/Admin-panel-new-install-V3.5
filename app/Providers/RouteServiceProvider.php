@@ -54,10 +54,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
 
             // Load installation routes only if app is not fully installed
-            // Check both PURCHASE_CODE and database tables existence
+            // APP_INSTALL is set to 'true' only after database configuration completes
             $isInstalled = false;
             try {
-                if (env('PURCHASE_CODE') != null) {
+                if (env('APP_INSTALL') == 'true') {
                     \DB::connection()->getPdo();
                     $isInstalled = \Schema::hasTable('business_settings') && 
                                    \Schema::hasTable('admins');
