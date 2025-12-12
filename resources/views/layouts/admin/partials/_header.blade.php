@@ -308,7 +308,8 @@
 
 
 
-<div class="toggle-tour">
+
+{{-- <div class="toggle-tour">
     <button type="button" class="tour-guide_btn w-40px h-40px border-0 bg-white d-flex align-items-center justify-content-center ">
         <span class="w-32 h-32px  min-w-32 d-flex align-items-center justify-content-center  bg-primary rounded-8"><img src="{{ asset('public/assets/admin/img/solar_multiple-forward-right-line-duotone.svg') }}" alt=""></span>
     </button>
@@ -339,7 +340,7 @@
         </div>
         @endif
     </div>
-</div>
+</div> --}}
 
 
 

@@ -282,6 +282,7 @@ class ConfigController extends Controller
                 });
             }
         }
+        $systemTax = null;
         if (addon_published_status('TaxModule')) {
             $systemTax = \Modules\TaxModule\Entities\SystemTaxSetup::where('is_active', 1)->where('is_default', 1)->first();
         }
@@ -695,7 +696,7 @@ class ConfigController extends Controller
 
         $awsUrl = config('filesystems.disks.s3.url');
         $awsBucket = config('filesystems.disks.s3.bucket');
-        $awsBaseURL = rtrim($awsUrl, '/') . '/' . ltrim($awsBucket . '/');
+        $awsBaseURL = rtrim((string)$awsUrl, '/') . '/' . ltrim($awsBucket . '/');
         $promotional_banners = [];
         $promotional_banners_data = ReactPromotionalBanner::where('status', 1)->get();
         foreach ($promotional_banners_data as $value) {
@@ -967,7 +968,7 @@ class ConfigController extends Controller
 
         $awsUrl = config('filesystems.disks.s3.url');
         $awsBucket = config('filesystems.disks.s3.bucket');
-        $awsBaseURL = rtrim($awsUrl, '/') . '/' . ltrim($awsBucket . '/');
+        $awsBaseURL = rtrim((string)$awsUrl, '/') . '/' . ltrim($awsBucket . '/');
 
         return response()->json(
             [
